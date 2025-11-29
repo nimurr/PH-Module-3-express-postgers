@@ -23,12 +23,12 @@ const initDB = async () => {
         CREATE TABLE IF NOT EXISTS users(
         id SERIAL PRIMARY KEY,
         name VARCHAR(50) NOT NULL,
-        email VARCHAR(50) NOT NULL,
+        email VARCHAR(50) NOT NULL UNIQUE,
         age INT , 
         address TEXT,
-        create_at TIMESTAMP DEFAULT NOW(),
-        update_at TIMESTAMP DEFAULT NOW(),
-        password VARCHAR(50) NOT NULL
+        password VARCHAR(50) NOT NULL,
+        create_at TIMESTAMP DEFAULT NOW(), 
+        update_at TIMESTAMP DEFAULT NOW()
         )
         `)
     await pool.query(`
@@ -52,14 +52,36 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Hello Next level ts Developer!')
 })
 
-app.post("/user", (req: Request, res: Response) => {
-    console.log(req.body)
-    res.status(201).json({
-        code: 201,
-        status: "success",
-        message: "user created successfully",
-        data: req.body
-    })
+app.post("/users", async (req: Request, res: Response) => {
+
+    const { name, email, age, address, password } = req.body;
+
+    try {
+        const result = await pool.query(`
+            INSERT INTO users(name, email, age, address, password) 
+            VALUES($1, $2, $3, $4, $5)
+            RETURNING *
+            ` , [name, email, age, address, password])
+
+        console.log(result.rows[0])
+
+        res.send({
+            code: 201,
+            status: "success",
+            message: "user created successfully",
+            data: result.rows[0]
+        })
+
+
+    } catch (error: any) {
+        console.log(error)
+        return res.status(400).json({
+            code: 400,
+            status: "error",
+            message: error.message,
+        })
+    }
+
 })
 
 
