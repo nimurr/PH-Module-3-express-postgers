@@ -1,8 +1,12 @@
 import express, { Request, Response } from 'express'
 import { Pool } from "pg";
 
+//? import dotenv
+import dotenv from "dotenv"
+dotenv.config()
+
 const app = express()
-const port = 5000
+const port = process.env.PORT || 5001
 
 //? use Parser for json data
 app.use(express.json())
@@ -11,7 +15,7 @@ app.use(express.urlencoded())
 
 //? DB connection
 const pool = new Pool({
-    connectionString: `postgresql://neondb_owner:npg_CA0znicZS1aO@ep-cool-butterfly-ah673s9y-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require`
+    connectionString: `${process.env.DATABASE_URL}`,
 })
 
 const initDB = async () => {
