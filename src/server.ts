@@ -46,11 +46,18 @@ const initDB = async () => {
 }
 initDB()
 
+//!========== Middleware ===========
+
+const logger = (req: Request, res: Response, next: any) => {
+    console.log(`[${new Date().toISOString()}]  METHOD:"${req.method}"  PATH:"${req.path}"`)
+    next()
+}
+
 
 //!========== Routes ===========
 
 //? get Test Server
-app.get('/', (req: Request, res: Response) => {
+app.get('/', logger, (req: Request, res: Response) => {
     res.send('Hello Next level ts Developer!')
 })
 
@@ -173,7 +180,8 @@ app.use((req: Request, res: Response) => {
     res.status(404).json({
         code: 404,
         status: "error",
-        message: "Route not found"
+        message: "Route not found",
+        path: req.url
     })
 })
 
