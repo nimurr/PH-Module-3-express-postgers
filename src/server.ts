@@ -55,7 +55,7 @@ app.get('/', (req: Request, res: Response) => {
 })
 
 
-//!========== Here users All CRUD operation =========
+//!========== Here All users CRUD operation =========
 //?------------ create user -----------------
 app.post("/users", async (req: Request, res: Response) => {
 
@@ -168,6 +168,16 @@ app.delete('/users/:id', async (req: Request, res: Response) => {
 
 
 
+//!======== Not Found Routes =========
+app.use((req: Request, res: Response) => {
+    res.status(404).json({
+        code: 404,
+        status: "error",
+        message: "Route not found"
+    })
+})
+
+//!========== Start Server ===========
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
 })
