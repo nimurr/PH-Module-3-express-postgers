@@ -1,23 +1,24 @@
 import express, { Request, Response } from 'express'
 import { Pool } from "pg";
 
-//? import dotenv
+//! import dotenv
 import dotenv from "dotenv"
 dotenv.config()
 
 const app = express()
 const port = process.env.PORT || 5001
 
-//? use Parser for json data
+//! use Parser for json data
 app.use(express.json())
 //? use Parser for fromData 
 app.use(express.urlencoded())
 
-//? DB connection
+//! DB connection
 const pool = new Pool({
     connectionString: `${process.env.DATABASE_URL}`,
 })
 
+//!========== DB Intergace Here ===========
 const initDB = async () => {
     await pool.query(`
         CREATE TABLE IF NOT EXISTS users(
@@ -46,12 +47,15 @@ const initDB = async () => {
 initDB()
 
 
-//?========== Routes ===========
+//!========== Routes ===========
 
+//? get Test Server
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello Next level ts Developer!')
 })
 
+
+//!========== Here users All CRUD operation =========
 //?------------ create user -----------------
 app.post("/users", async (req: Request, res: Response) => {
 
@@ -130,7 +134,6 @@ app.put('/users/:id', async (req: Request, res: Response) => {
 })
 
 //? Delete single user
-
 app.delete('/users/:id', async (req: Request, res: Response) => {
     const { id } = req.query;
     try {
