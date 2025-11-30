@@ -52,6 +52,7 @@ app.get('/', (req: Request, res: Response) => {
     res.send('Hello Next level ts Developer!')
 })
 
+//? create user 
 app.post("/users", async (req: Request, res: Response) => {
 
     const { name, email, age, address, password } = req.body;
@@ -83,6 +84,36 @@ app.post("/users", async (req: Request, res: Response) => {
     }
 
 })
+
+//? get all users
+app.get('/users', async (req: Request, res: Response) => {
+    try {
+        const result = await pool.query("SELECT * FROM users")
+        res.status(200).json({
+            code: 200,
+            status: "success",
+            data: result.rows
+        })
+    } catch (error) {
+        console.log(error)
+    }
+})
+//? get single user
+app.get('/users/:id', async (req: Request, res: Response) => {
+    const { id } = req.params
+    try {
+        const result = await pool.query("SELECT * FROM users WHERE id = $1", [id])
+        res.status(200).json({
+            code: 200,
+            status: "success",
+            data: result.rows[0]
+        })
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+
 
 
 app.listen(port, () => {
