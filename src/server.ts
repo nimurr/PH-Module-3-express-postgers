@@ -64,7 +64,7 @@ app.get('/', logger, (req: Request, res: Response) => {
 
 //!========== Here All users CRUD operation =========
 //?------------ create user -----------------
-app.post("/users", async (req: Request, res: Response) => {
+app.post("/users", logger, async (req: Request, res: Response) => {
 
     const { name, email, age, address, password } = req.body;
 
@@ -96,7 +96,7 @@ app.post("/users", async (req: Request, res: Response) => {
 
 })
 //?------------ get all users ---------------
-app.get('/users', async (req: Request, res: Response) => {
+app.get('/users', logger, async (req: Request, res: Response) => {
     try {
         const result = await pool.query("SELECT * FROM users")
         res.status(200).json({
@@ -109,7 +109,7 @@ app.get('/users', async (req: Request, res: Response) => {
     }
 })
 //? get single user
-app.get('/users/:id', async (req: Request, res: Response) => {
+app.get('/users/:id', logger, async (req: Request, res: Response) => {
     const { id } = req.params
     try {
         const result = await pool.query("SELECT * FROM users WHERE id = $1", [id])
@@ -124,7 +124,7 @@ app.get('/users/:id', async (req: Request, res: Response) => {
 })
 
 //? Update single user 
-app.put('/users/:id', async (req: Request, res: Response) => {
+app.put('/users/:id', logger, async (req: Request, res: Response) => {
     const { id } = req.params;
     const { name, email, age, address, password } = req.body;
     try {
@@ -141,7 +141,7 @@ app.put('/users/:id', async (req: Request, res: Response) => {
 })
 
 //? Delete single user
-app.delete('/users/:id', async (req: Request, res: Response) => {
+app.delete('/users/:id', logger, async (req: Request, res: Response) => {
     const { id } = req.query;
     try {
         const result = await pool.query(`
