@@ -46,13 +46,13 @@ const initDB = async () => {
 initDB()
 
 
-//? Routes 
+//?========== Routes ===========
 
 app.get('/', (req: Request, res: Response) => {
     res.send('Hello Next level ts Developer!')
 })
 
-//? create user 
+//?------------ create user -----------------
 app.post("/users", async (req: Request, res: Response) => {
 
     const { name, email, age, address, password } = req.body;
@@ -84,8 +84,7 @@ app.post("/users", async (req: Request, res: Response) => {
     }
 
 })
-
-//? get all users
+//?------------ get all users ---------------
 app.get('/users', async (req: Request, res: Response) => {
     try {
         const result = await pool.query("SELECT * FROM users")
@@ -113,6 +112,56 @@ app.get('/users/:id', async (req: Request, res: Response) => {
     }
 })
 
+//? Update single user 
+app.put('/users/:id', async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { name, email, age, address, password } = req.body;
+    try {
+        const result = await pool.query("UPDATE users SET name = $1, email = $2, age = $3, address = $4, password = $5 WHERE id = $6 RETURNING *", [name, email, age, address, password, id])
+
+        res.status(200).json({
+            code: 200,
+            status: "success",
+            data: result.rows[0]
+        })
+    } catch (error) {
+        console.log(error)
+    }
+})
+
+//? Delete single user
+
+app.delete('/users/:id', async (req: Request, res: Response) => {
+    const { id } = req.query;
+    try {
+        const result = await pool.query(`
+            DELETE FROM users WHERE id = $1
+            RETURNING *
+            `, [id])
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                code: 404,
+                status: "error",
+                message: "user not found"
+            })
+        }
+        else {
+            res.status(200).json({
+                code: 200,
+                status: "success",
+                message: "user deleted successfully",
+                data: result.rows[0]
+            })
+        }
+    } catch (error: any) {
+        console.log(error)
+        res.status(400).json({
+            code: 400,
+            status: "error",
+            message: error.message
+        })
+    }
+})
 
 
 
