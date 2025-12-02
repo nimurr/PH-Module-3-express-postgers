@@ -7,49 +7,10 @@ const router = express.Router();
 
 router.post('/', userController.createUser)
 
-router.get('/', async (req: Request, res: Response) => {
-    try {
-        const result = await pool.query(`SELECT * FROM users`);
+router.get('/', userController.getUser)
 
-        res.status(200).json({
-            success: true,
-            message: "Users retrieved successfully",
-            data: result.rows,
-        });
-    } catch (err: any) {
-        res.status(500).json({
-            success: false,
-            message: err.message,
-            datails: err,
-        });
-    }
-})
-router.get('/:id', async (req: Request, res: Response) => {
-    // console.log(req.params.id);
-    try {
-        const result = await pool.query(`SELECT * FROM users WHERE id = $1`, [
-            req.params.id,
-        ]);
+router.get('/:id', userController.getUserById)
 
-        if (result.rows.length === 0) {
-            res.status(404).json({
-                success: false,
-                message: "User not found",
-            });
-        } else {
-            res.status(200).json({
-                success: true,
-                message: "User fetched successfully",
-                data: result.rows[0],
-            });
-        }
-    } catch (err: any) {
-        res.status(500).json({
-            success: false,
-            message: err.message,
-        });
-    }
-})
 router.put('/:id', async (req: Request, res: Response) => {
     // console.log(req.params.id);
     const { name, email } = req.body;
