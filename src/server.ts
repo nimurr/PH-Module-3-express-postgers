@@ -2,8 +2,8 @@ import express, { NextFunction, Request, Response } from "express";
 import config from "./config";
 import initDB, { pool } from "./config/db";
 import logger from "./middleware/logger";
-import { userRoutes } from "./middleware/user/user.routes";
-import { todosRoutes } from "./middleware/todo/todos.routes";
+import { userRoutes } from "./modules/user/user.routes";
+import { todosRoutes } from "./modules/todo/todos.routes";
 
 //!Basic Express Setup
 const app = express();
