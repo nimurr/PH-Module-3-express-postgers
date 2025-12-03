@@ -21,7 +21,9 @@ const loginUser = async (email: string, password: string) => {
 
     delete user.password
 
-    const token = jwt.sign({ id: user.id , email: user.email , name: user.name }, config.jwt_secret, { expiresIn: '7d' })
+    const token = jwt.sign({ id: user.id, email: user.email, name: user.name, role: user.role }, config.jwt_secret, { expiresIn: '7d' })
+
+    console.log(token)
 
     const results = {
         token,
